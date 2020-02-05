@@ -1,8 +1,3 @@
-**TwitchRevoke** Easily Revoke OAuth Tokens to prevent Twitch Identity Theft!
-
-# TwitchRevoke
-Come join Instafluff building projects like this live on Twitch at the Comfy Corner!
-
 ## Instafluff ##
 > *Like these projects? The best way to support my open-source projects is by becoming a Comfy Sponsor on GitHub!*
 
@@ -11,6 +6,11 @@ Come join Instafluff building projects like this live on Twitch at the Comfy Cor
 > *Come and hang out with us at the Comfiest Corner on Twitch!*
 
 > https://twitch.tv/instafluff
+
+**TwitchOAuthRevoker** Easily Revoke OAuth Tokens to prevent Twitch Identity Theft!
+
+# TwitchOAuthRevoker
+Come join Instafluff building projects like this live on Twitch at the Comfy Corner!
 
 ## Instructions ##
 
