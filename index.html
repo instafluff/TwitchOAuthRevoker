@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <title>Twitch OAuth Token Revoke</title>
+  </head>
+  <body>
+    <div class="container">
+      <div class="row">
+        <div class="col-12">
+          <div class="jumbotron">
+            <h3 class="display-6"><a href="https://twitch.tv/instafluff">Instafluff's</a> Twitch OAuth Token Invalidator</h3>
+            <p class="lead">This is a tool to revoke your Twitch OAuth token. Use this tool to invalidate your Twitch OAuth token if you think it might be compromised so that no one else can use it to chat as you.</p>
+            <hr class="my-4">
+            <div id="page-error" class="alert alert-danger" role="alert" style="display: none;">
+              <h4 class="alert-heading">Hmm...</h4>
+              <span id="error-text"></span>
+            </div>
+            <div id="page-success" class="alert alert-success" role="alert" style="display: none;">
+              <h4 class="alert-heading">Success!</h4>
+              <span id="success-text"></span>
+            </div>
+            <label for="oauth-id">Note: This will expire your token and any apps or links using it will no longer work.</label>
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon3">OAuth Token</span>
+              </div>
+              <input type="text" class="form-control" id="oauth-id" aria-describedby="basic-addon3" placeholder="(e.g. oauth:32xnpgvm1bu4h5sda7fcg4zko1hb2s)">
+              <div class="input-group-append">
+                  <button id="invalidate-btn" class="form-control-input btn btn-danger">Invalidate</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="web/comfy.min.js"></script>
+    <script>
+      const params = new URLSearchParams(location.search);
+      $( "#page-error" ).hide();
+      $( "#page-success" ).hide();
+      if( params.get( "token" ) ) {
+          $( "#oauth-id" ).val( params.get( "token" ) );
+      }
+      $( "#invalidate-btn" ).on( "click", async () => {
+          try {
+              let token = $( "#oauth-id" ).val();
+              if( token.startsWith( "oauth:" ) ) {
+                  token = token.replace( "oauth:", "" );
+              }
+              // Check if the token is valid
+              let validation = await fetch( `https://id.twitch.tv/oauth2/validate`, {
+                  headers: {
+                      Authorization: `OAuth ${token}`
+                  }
+              }). then( r => r.json() );
+              console.log( validation );
+              if( validation && ( validation.status === 200 || validation.status === undefined ) ) {
+                  console.log( "Token is ready to be revoked.", validation );
+              }
+              else {
+                  throw "Token is already invalid.";
+              }
+              let result = await fetch( `https://id.twitch.tv/oauth2/revoke?client_id=${validation.client_id}&token=${token}`, {
+                  method: "POST"
+              } );
+              if( result.status !== 200 ) {
+                  throw `${result.status} Error`;
+              }
+
+              $( "#page-success" ).show();
+              $( "#success-text" ).text( `This token has been safely revoked for ${validation.login} (${validation.user_id})` );
+          }
+          catch( err ) {
+              $( "#page-error" ).show();
+              $( "#error-text" ).text( `Could not invalidate token: ${err}` );
+          }
+      });
+    </script>
+  </body>
+</html>
