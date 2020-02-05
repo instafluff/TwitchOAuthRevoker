@@ -1,0 +1,34 @@
+{
+  "name": "twitchoauthrevoker",
+  "version": "1.0.0",
+  "description": "Easily Revoke OAuth Tokens to prevent Twitch Identity Theft!",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/instafluff/TwitchOAuthRevoker.git"
+  },
+  "keywords": [
+    "Instafluff",
+    "Twitch",
+    "Chat",
+    "OAuth",
+    "Revoke",
+    "Invalid",
+    "Invalidate",
+    "Token",
+    "Channel",
+    "Livestream"
+  ],
+  "author": "Instafluff",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/instafluff/TwitchOAuthRevoker/issues"
+  },
+  "homepage": "https://github.com/instafluff/TwitchOAuthRevoker#readme",
+  "dependencies": {
+    "webwebweb": "^1.1.8"
+  }
+}
